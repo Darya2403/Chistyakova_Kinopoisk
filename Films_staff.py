@@ -6,7 +6,7 @@ def films_staff(session):
     results = session.run("MATCH (g:Genre), (c:Country) RETURN g.id, c.id ORDER BY id(g), id(c)")
     print(results)
     #Задаем стартовые значения id для перебора
-    start_genre_id = 2
+    start_genre_id = 1
     start_country_id = 1
 
     #Цикл по перебору всех вариаций жанра и стран
