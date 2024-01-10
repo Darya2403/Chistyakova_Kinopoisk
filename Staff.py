@@ -1,10 +1,11 @@
 import requests
+import time
 
-def staff(session, film):
+def staff(session, password, film):
     #Делаем запрос по каждому фильму для получения всех сотрудников
     response2 = requests.get('https://kinopoiskapiunofficial.tech/api/v1/staff',
                              params={"filmId": film['kinopoiskId']},
-                             headers={'X-API-KEY': 'eaf99c7a-23ee-4d61-918c-e683a457ba98',
+                             headers={'X-API-KEY': password,
                                       'Content-Type': 'application/json'})
     #Проверяем, что получили
     if response2.status_code == 200:
@@ -12,8 +13,14 @@ def staff(session, film):
             data2 = response2.json()
             for staff in data2:
                 #Создаем узел сотрудник + где необходимо, проверки на none
-                name = staff['nameEn']
-                russian_name = staff['nameRu']
+                if staff['nameEn'] is not None:
+                    name = staff['nameEn']
+                else:
+                    name = 'no inf'
+                if staff['nameRu'] is not None:
+                    russian_name = staff['nameRu']
+                else:
+                    russian_name = 'no inf'
                 staffId = staff['staffId']
                 if staff['posterUrl'] is not None:
                    posterUrl = staff['posterUrl']
@@ -27,10 +34,10 @@ def staff(session, film):
                             posterUrl=posterUrl)
                 #Создаем связь сотрудник-фильм
                 relationship = staff['professionKey']
-                session.run("MATCH (f:Film {kinopoiskId: $kinopoiskId}), (s:Staff {name: $name}) MERGE (f)-[:"+relationship+"]->(s)",
-                            name=staff['nameEn'], kinopoiskId=film['kinopoiskId'])
-
+                session.run("MATCH (f:Film {kinopoiskId: $kinopoiskId}), (s:Staff {staffId: $staffId}) MERGE (f)-[:"+relationship+"]->(s)",
+                            staffId=staff['staffId'], kinopoiskId=film['kinopoiskId'])
+            time.sleep(0.05)
         except ValueError:
-            print("В ответе не JSON")
+            print("Ошибка формата: ", data2)
     else:
         print("Error: ", response2.status_code)
