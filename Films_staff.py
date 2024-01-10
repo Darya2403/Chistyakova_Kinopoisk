@@ -26,7 +26,7 @@ def films_staff(driver, password):
                         if response.status_code == 200:
                             try:
                                 data = response.json()
-                                print(data)
+                                #print(data)
                                 total_pages = data["totalPages"]
                                 page += 1
                                 #Перечисляем параметры + где необходимо, проверки на none
