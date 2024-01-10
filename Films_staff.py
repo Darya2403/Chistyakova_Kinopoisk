@@ -9,7 +9,7 @@ def films_staff(driver, password):
             results = session.run("MATCH (g:Genre), (c:Country) RETURN g.id, c.id ORDER BY id(g), id(c)")
             #Задаем стартовые значения id для перебора
             start_genre_id = 1
-            start_country_id = 5
+            start_country_id = 1
 
             #Цикл по перебору всех вариаций жанра и стран
             for genre, country in results:
@@ -26,6 +26,7 @@ def films_staff(driver, password):
                         if response.status_code == 200:
                             try:
                                 data = response.json()
+                                print(data)
                                 total_pages = data["totalPages"]
                                 page += 1
                                 #Перечисляем параметры + где необходимо, проверки на none
